@@ -1,8 +1,20 @@
-# solsharescript
+# solshare
 
-A command-line tool to fetch and display your solar and electricity demand data from the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) portal.
+Tools for fetching and interacting with your solar and electricity demand data from the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) portal.
 
-## What it does
+## Structure
+
+```
+solshare/
+├── cli/            # Command-line tool
+│   └── solshare.py
+├── alexa-skill/    # Alexa voice skill
+│   ├── lambda/
+│   └── skill-package/
+└── API.md          # Allume Energy API reference
+```
+
+## CLI
 
 Displays an hourly table of your energy demand vs solar consumption for any time window, with a bar chart showing solar coverage per hour.
 
@@ -22,23 +34,23 @@ Displays an hourly table of your energy demand vs solar consumption for any time
 
 All values are in **kWh**. Times are displayed in **AEDT (UTC+11)**.
 
-## Requirements
+### Requirements
 
 Python 3.6+, no third-party libraries required.
 
-## Setup
+### Setup
 
-### 1. Clone the repo
+**1. Clone the repo**
 
 ```bash
-git clone https://github.com/jquirke/solsharescript.git
-cd solsharescript
+git clone https://github.com/jquirke/solshare.git
+cd solshare
 ```
 
-### 2. Save your credentials
+**2. Save your credentials**
 
 ```bash
-python3 solshare.py --email your@email.com --password yourpassword --save
+python3 cli/solshare.py --email your@email.com --password yourpassword --save
 ```
 
 This writes `~/.solshare` (mode 600):
@@ -49,25 +61,18 @@ email = your@email.com
 password = yourpassword
 ```
 
-You can also create or edit `~/.solshare` manually.
-
-## Usage
+### Usage
 
 ```bash
 # Last 24 hours (default)
-python3 solshare.py
+python3 cli/solshare.py
 
 # A specific day
-python3 solshare.py --from 2026-02-25
+python3 cli/solshare.py --from 2026-02-25
 
 # A date range
-python3 solshare.py --from 2026-02-20 --to 2026-02-26
-
-# Override credentials without saving
-python3 solshare.py --email your@email.com --password yourpassword
+python3 cli/solshare.py --from 2026-02-20 --to 2026-02-26
 ```
-
-### Arguments
 
 | Argument | Description |
 |---|---|
@@ -77,17 +82,23 @@ python3 solshare.py --email your@email.com --password yourpassword
 | `--password` | Password (overrides `~/.solshare`) |
 | `--save` | Save `--email` and `--password` to `~/.solshare` |
 
-## Data fields
+---
 
-| Field | Description |
-|---|---|
-| Demand | Total electricity consumed (kWh) |
-| Solar | Solar energy consumed directly from SolShare (kWh) |
-| Grid | Energy drawn from the grid (`Demand - Solar`) |
-| Solar% | Proportion of demand met by solar |
+## Alexa Skill
 
-See [API.md](API.md) for full documentation of the underlying Allume Energy API.
+Voice skill for Echo devices. Invocation name: **"my solar"**
+
+**Example commands:**
+- "Alexa, ask my solar how much solar I'm getting"
+- "Alexa, ask my solar if there's surplus solar"
+- "Alexa, ask my solar how my solar did today"
+
+Deployed to AWS Lambda (ap-southeast-2). See `alexa-skill/` for the skill manifest and interaction models.
+
+---
 
 ## Background
 
-This is the first step in a project to maximise rooftop PV energy received via [Allume Energy's SolShare](https://allumeenergy.com.au) system, which distributes solar energy across apartments in a strata building.
+A project to maximise rooftop PV energy received via [Allume Energy's SolShare](https://allumeenergy.com.au) system, which distributes solar energy across apartments in a strata building.
+
+See [API.md](API.md) for full documentation of the underlying Allume Energy API.
