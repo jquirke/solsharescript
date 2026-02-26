@@ -1,0 +1,51 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-AU": {
+          "name": "Sol Share",
+          "summary": "Check your solar energy usage and surplus from your SolShare system.",
+          "description": "Ask Sol Share how much solar you're generating, whether you have surplus solar, or how your solar performed today.",
+          "examplePhrases": [
+            "Alexa, ask Sol Share how much solar I'm getting",
+            "Alexa, ask Sol Share if there's surplus solar",
+            "Alexa, ask Sol Share how my solar did today"
+          ],
+          "keywords": [
+            "solar",
+            "energy",
+            "solshare",
+            "allume"
+          ]
+        },
+        "en-US": {
+          "name": "Sol Share",
+          "summary": "Check your solar energy usage and surplus from your SolShare system.",
+          "description": "Ask Sol Share how much solar you're generating, whether you have surplus solar, or how your solar performed today.",
+          "examplePhrases": [
+            "Alexa, ask Sol Share how much solar I'm getting",
+            "Alexa, ask Sol Share if there's surplus solar",
+            "Alexa, ask Sol Share how my solar did today"
+          ],
+          "keywords": [
+            "solar",
+            "energy",
+            "solshare",
+            "allume"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "category": "SMART_HOME",
+      "distributionMode": "PRIVATE"
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:ap-southeast-2:545410152188:function:solshare-alexa"
+        }
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}

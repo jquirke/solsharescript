@@ -1,0 +1,24 @@
+{
+  "forceExit": false,
+  "profiles": {
+    "default": {
+      "skillMetadata": {
+        "src": "./skill-package"
+      },
+      "code": {
+        "default": {
+          "src": "./lambda"
+        }
+      },
+      "regionalOverrides": {
+        "ap-southeast-2": {
+          "code": {
+            "default": {
+              "src": "./lambda"
+            }
+          }
+        }
+      }
+    }
+  }
+}

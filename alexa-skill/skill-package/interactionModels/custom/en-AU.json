@@ -1,0 +1,57 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "my solar",
+      "intents": [
+        {
+          "name": "CurrentSolarIntent",
+          "slots": [],
+          "samples": [
+            "how much solar am I getting",
+            "what's my solar output",
+            "how much solar right now",
+            "what is my current solar",
+            "how much solar are we generating",
+            "what's the solar like right now",
+            "how's my solar going"
+          ]
+        },
+        {
+          "name": "SurplusIntent",
+          "slots": [],
+          "samples": [
+            "is there surplus solar",
+            "do I have surplus solar",
+            "how much surplus solar is there",
+            "am I exporting solar",
+            "is solar being exported to the grid",
+            "how much solar is being exported",
+            "is there excess solar"
+          ]
+        },
+        {
+          "name": "TodaySummaryIntent",
+          "slots": [],
+          "samples": [
+            "how did my solar do today",
+            "what was my solar coverage today",
+            "give me today's solar summary",
+            "what's my solar summary",
+            "how much solar did I use today",
+            "what percentage of my power was solar today",
+            "today's energy summary"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent"
+        },
+        {
+          "name": "AMAZON.CancelIntent"
+        },
+        {
+          "name": "AMAZON.StopIntent"
+        }
+      ]
+    }
+  }
+}

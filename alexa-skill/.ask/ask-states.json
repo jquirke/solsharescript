@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "default": {
+      "deploymentStatus": "COMPLETE",
+      "skillMetadata": {
+        "lastImportId": "amzn1.ask-package.import.7ac74d05-408f-4ceb-8a91-2d630835f350",
+        "lastImportTimestamp": "2026-02-26T15:47:20.364Z",
+        "lastDeployHash": "vaJ+kfMGK/CuxBl+gL11EpNYHZo=",
+        "lastDeployType": "interaction-model"
+      },
+      "skillId": "amzn1.ask.skill.ddb1b50e-1d83-4e84-b582-aa55458f4e00"
+    }
+  }
+}
