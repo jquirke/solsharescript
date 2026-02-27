@@ -119,16 +119,22 @@ def handle_current_solar():
     if not r:
         return speak("No recent data is available.")
 
-    demand = r["energyDemand"]
-    solar  = max(r["solarConsumed"], 0)
-    p      = pct(solar, demand)
+    demand    = r["energyDemand"]
+    solar     = max(r["solarConsumed"], 0)
+    delivered = max(r["solarDelivered"], 0)
+    p         = pct(solar, demand)
 
-    if solar == 0:
+    if delivered == 0:
         text = "There is no solar generation at the moment."
     elif p >= 99:
-        text = f"Solar is covering all of your current demand of {kwh(demand)}."
+        surplus = round(delivered - solar, 2)
+        if surplus > 0:
+            text = (f"Solar is covering all of your current demand of {kwh(demand)}, "
+                    f"with {kwh(surplus)} surplus being exported to the grid.")
+        else:
+            text = f"Solar is covering all of your current demand of {kwh(demand)}."
     else:
-        text = (f"You are currently using {kwh(solar)} of solar, "
+        text = (f"You are currently using {kwh(solar)} of solar out of {kwh(delivered)} delivered, "
                 f"meeting {p:.0f} percent of your demand of {kwh(demand)}.")
 
     return speak(text)
@@ -175,17 +181,20 @@ def handle_today_summary():
     if not data:
         return speak("No data is available for today yet.")
 
-    total_demand = sum(r["energyDemand"] for r in data)
-    total_solar  = sum(max(r["solarConsumed"], 0) for r in data)
-    total_grid   = max(total_demand - total_solar, 0)
-    p            = pct(total_solar, total_demand)
+    total_demand    = sum(r["energyDemand"] for r in data)
+    total_solar     = sum(max(r["solarConsumed"], 0) for r in data)
+    total_delivered = sum(max(r["solarDelivered"], 0) for r in data)
+    total_exported  = round(total_delivered - total_solar, 2)
+    total_grid      = max(total_demand - total_solar, 0)
+    p               = pct(total_solar, total_demand)
 
     if total_demand == 0:
         return speak("No energy data recorded today yet.")
 
     text = (f"Today so far, solar has met {p:.0f} percent of your demand. "
-            f"You've used {kwh(total_solar)} of solar and {kwh(total_grid)} from the grid, "
-            f"out of {kwh(total_demand)} total.")
+            f"You've used {kwh(total_solar)} of solar out of {kwh(total_delivered)} delivered, "
+            f"with {kwh(total_exported)} exported to the grid, "
+            f"and {kwh(total_grid)} drawn from the grid.")
 
     return speak(text)
 

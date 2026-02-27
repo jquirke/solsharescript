@@ -119,29 +119,32 @@ def print_table(data):
     time_hdr   = f"Time ({tz_name})"
 
     print()
-    print('┌─────────────────────┬────────┬────────┬────────┬──────────────────────────┐')
-    print(f'│ {time_hdr:<19} │ Demand │  Solar │   Grid │ Solar coverage           │')
-    print('├─────────────────────┼────────┼────────┼────────┼──────────────────────────┤')
+    print('┌─────────────────────┬────────┬────────┬────────┬────────┬──────────────────────────┐')
+    print(f'│ {time_hdr:<19} │ Demand │ Delivrd│  Solar │   Grid │ Solar coverage           │')
+    print('├─────────────────────┼────────┼────────┼────────┼────────┼──────────────────────────┤')
 
-    total_demand = 0
-    total_solar  = 0
+    total_demand    = 0
+    total_solar     = 0
+    total_delivered = 0
 
     for r in data:
-        t      = datetime.fromisoformat(r['startAt'].replace('Z', '+00:00')).astimezone(LOCAL_TZ)
-        demand = r['energyDemand']
-        solar  = max(r['solarConsumed'], 0)   # clamp API rounding artefacts
-        grid   = round(demand - solar, 2)
-        pct    = solar / demand * 100 if demand > 0 else 0
-        b      = bar(solar, max_demand)
-        print(f'│ {t.strftime("%a %d %b %H:%M"):19} │ {demand:5.2f}  │ {solar:5.2f}  │ {grid:5.2f}  │ {b} {pct:3.0f}% │')
-        total_demand += demand
-        total_solar  += solar
+        t         = datetime.fromisoformat(r['startAt'].replace('Z', '+00:00')).astimezone(LOCAL_TZ)
+        demand    = r['energyDemand']
+        solar     = max(r['solarConsumed'], 0)
+        delivered = max(r['solarDelivered'], 0)
+        grid      = round(demand - solar, 2)
+        pct       = solar / demand * 100 if demand > 0 else 0
+        b         = bar(solar, max_demand)
+        print(f'│ {t.strftime("%a %d %b %H:%M"):19} │ {demand:5.2f}  │ {delivered:5.2f}  │ {solar:5.2f}  │ {grid:5.2f}  │ {b} {pct:3.0f}% │')
+        total_demand    += demand
+        total_solar     += solar
+        total_delivered += delivered
 
-    total_grid    = round(total_demand - total_solar, 2)
-    overall_pct   = total_solar / total_demand * 100 if total_demand > 0 else 0
-    print('├─────────────────────┼────────┼────────┼────────┼──────────────────────────┤')
-    print(f'│ {"TOTAL":19} │ {total_demand:5.2f}  │ {total_solar:5.2f}  │ {total_grid:5.2f}  │ {"Overall solar:":14} {overall_pct:3.0f}%    │')
-    print('└─────────────────────┴────────┴────────┴────────┴──────────────────────────┘')
+    total_grid  = round(total_demand - total_solar, 2)
+    overall_pct = total_solar / total_demand * 100 if total_demand > 0 else 0
+    print('├─────────────────────┼────────┼────────┼────────┼────────┼──────────────────────────┤')
+    print(f'│ {"TOTAL":19} │ {total_demand:5.2f}  │ {total_delivered:5.2f}  │ {total_solar:5.2f}  │ {total_grid:5.2f}  │ {"Overall solar:":14} {overall_pct:3.0f}%    │')
+    print('└─────────────────────┴────────┴────────┴────────┴────────┴──────────────────────────┘')
     print()
 
 
