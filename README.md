@@ -102,3 +102,9 @@ Deployed to AWS Lambda (ap-southeast-2). See `alexa-skill/` for the skill manife
 A project to maximise rooftop PV energy received via [Allume Energy's SolShare](https://allumeenergy.com.au) system, which distributes solar energy across apartments in a strata building.
 
 See [API.md](API.md) for full documentation of the underlying Allume Energy API.
+
+---
+
+## Disclaimer
+
+This is an independent, personal project and is not affiliated with, endorsed by, or supported by [Allume Energy](https://allumeenergy.com.au) or SolShare. All trademarks belong to their respective owners.
