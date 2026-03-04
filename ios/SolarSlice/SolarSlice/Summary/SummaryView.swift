@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 struct SummaryView: View {
     @EnvironmentObject private var authManager: AuthManager
@@ -37,7 +38,13 @@ struct SummaryView: View {
                         SectionHeader(title: "Today")
                         todayGrid
                             .padding(.horizontal)
-                            .padding(.bottom, 16)
+
+                        if !viewModel.todayHourlyPoints.isEmpty {
+                            SectionHeader(title: "Today by Hour")
+                            todayHourlyChart
+                                .padding(.horizontal)
+                                .padding(.bottom, 16)
+                        }
                     }
                 }
             }
@@ -147,6 +154,70 @@ struct SummaryView: View {
             )
         }
         .padding(.vertical, 8)
+    }
+
+    private var todayHourlyChart: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Chart(viewModel.todayHourlyPoints) { point in
+                BarMark(
+                    x: .value("Hour", point.label),
+                    y: .value("Solar (kWh)", point.solar),
+                    stacking: .standard
+                )
+                .foregroundStyle(.yellow)
+
+                BarMark(
+                    x: .value("Hour", point.label),
+                    y: .value("Exported (kWh)", point.exported),
+                    stacking: .standard
+                )
+                .foregroundStyle(.mint)
+
+                BarMark(
+                    x: .value("Hour", point.label),
+                    y: .value("Grid (kWh)", point.grid),
+                    stacking: .standard
+                )
+                .foregroundStyle(.blue)
+            }
+            .chartXAxis {
+                AxisMarks(values: .automatic(desiredCount: 8)) { _ in
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel()
+                }
+            }
+            .chartYAxis {
+                AxisMarks { value in
+                    AxisGridLine()
+                    AxisValueLabel {
+                        if let d = value.as(Double.self) {
+                            Text(String(format: "%.2f", d))
+                        }
+                    }
+                }
+            }
+            .frame(height: 200)
+
+            HStack(spacing: 20) {
+                HStack(spacing: 6) {
+                    Circle().fill(.yellow).frame(width: 10, height: 10)
+                    Text("Solar").font(.caption)
+                }
+                HStack(spacing: 6) {
+                    Circle().fill(.mint).frame(width: 10, height: 10)
+                    Text("Exported").font(.caption)
+                }
+                HStack(spacing: 6) {
+                    Circle().fill(.blue).frame(width: 10, height: 10)
+                    Text("Grid").font(.caption)
+                }
+                Spacer()
+                Text("kWh").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .cardStyle()
+        .padding(.bottom, 16)
     }
 
     // MARK: - Helpers

@@ -1,6 +1,15 @@
 import Foundation
 import Combine
 
+struct HourlyDataPoint: Identifiable {
+    let id: String
+    let label: String
+    let date: Date
+    let solar: Double
+    let grid: Double
+    let exported: Double
+}
+
 @MainActor
 final class SummaryViewModel: ObservableObject {
     // MARK: - Today aggregates
@@ -10,6 +19,8 @@ final class SummaryViewModel: ObservableObject {
     @Published private(set) var todaySolarExported: Double = 0
     @Published private(set) var todayGridImport: Double = 0
     @Published private(set) var todaySolarPercent: Double = 0
+
+    @Published private(set) var todayHourlyPoints: [HourlyDataPoint] = []
 
     // MARK: - Last hour
     @Published private(set) var lastHourSolarConsumed: Double = 0
@@ -93,6 +104,37 @@ final class SummaryViewModel: ObservableObject {
         todaySolarExported = exported
         todayGridImport = max(demand - solar, 0)
         todaySolarPercent = demand > 0 ? solar / demand : 0
+        todayHourlyPoints = buildHourlyPoints(snapshots)
+    }
+
+    private func buildHourlyPoints(_ snapshots: [Snapshot]) -> [HourlyDataPoint] {
+        let cal = Calendar.current
+        let f = DateFormatter()
+        f.dateFormat = "ha"
+        f.amSymbol = "am"
+        f.pmSymbol = "pm"
+
+        var dict: [Date: [Snapshot]] = [:]
+        for snap in snapshots {
+            guard let date = snap.startDate else { continue }
+            let key = cal.dateInterval(of: .hour, for: date)?.start ?? date
+            dict[key, default: []].append(snap)
+        }
+
+        return dict.map { (date, snaps) in
+            let solar = snaps.map { max($0.solarConsumed, 0) }.reduce(0, +)
+            let demand = snaps.map(\.energyDemand).reduce(0, +)
+            let grid = max(demand - solar, 0)
+            let exported = snaps.map { max($0.solarExported, 0) }.reduce(0, +)
+            return HourlyDataPoint(
+                id: ISO8601DateFormatter().string(from: date),
+                label: f.string(from: date).lowercased(),
+                date: date,
+                solar: solar,
+                grid: grid,
+                exported: exported
+            )
+        }.sorted { $0.date < $1.date }
     }
 
     private func applyLastHourAggregates(_ snapshots: [Snapshot]) {
