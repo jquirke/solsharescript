@@ -22,7 +22,36 @@
 		9BF36DBA2F5891CD00050999 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF36D972F5891CD00050999 /* APIClient.swift */; };
 		9BF36DBB2F5891CD00050999 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF36D9B2F5891CD00050999 /* LoginView.swift */; };
 		9BF36DBC2F5891CD00050999 /* ViewComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF36DA62F5891CD00050999 /* ViewComponents.swift */; };
+		9BF36E182F589FD900050999 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BF36E172F589FD800050999 /* WidgetKit.framework */; };
+		9BF36E1A2F589FD900050999 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BF36E192F589FD900050999 /* SwiftUI.framework */; };
+		9BF36E292F589FDA00050999 /* SolarSliceWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9BF36E152F589FD800050999 /* SolarSliceWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9BF36E312F58A12B00050999 /* AppGroupCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF36DA52F5891CD00050999 /* AppGroupCache.swift */; };
+		9BF36E322F58A13C00050999 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF36D9D2F5891CD00050999 /* Models.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9BF36E272F589FDA00050999 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9BEA99702F58787F00A1D121 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BF36E142F589FD800050999;
+			remoteInfo = SolarSliceWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9BF36E2A2F589FDA00050999 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9BF36E292F589FDA00050999 /* SolarSliceWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9BEA99782F58787F00A1D121 /* SolarSlice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SolarSlice.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,12 +70,34 @@
 		9BF36DA92F5891CD00050999 /* SummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModel.swift; sourceTree = "<group>"; };
 		9BF36DAB2F5891CD00050999 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
 		9BF36DAC2F5891CD00050999 /* TrendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModel.swift; sourceTree = "<group>"; };
+		9BF36E152F589FD800050999 /* SolarSliceWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SolarSliceWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BF36E172F589FD800050999 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		9BF36E192F589FD900050999 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		9BF36E302F58A03600050999 /* SolarSliceWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SolarSliceWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9BF36E2D2F589FDA00050999 /* Exceptions for "SolarSliceWidget" folder in "SolarSliceWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9BF36E142F589FD800050999 /* SolarSliceWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9BEA997A2F58787F00A1D121 /* SolarSlice */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SolarSlice;
+			sourceTree = "<group>";
+		};
+		9BF36E1B2F589FD900050999 /* SolarSliceWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9BF36E2D2F589FDA00050999 /* Exceptions for "SolarSliceWidget" folder in "SolarSliceWidgetExtension" target */,
+			);
+			path = SolarSliceWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -59,12 +110,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BF36E122F589FD800050999 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BF36E1A2F589FD900050999 /* SwiftUI.framework in Frameworks */,
+				9BF36E182F589FD900050999 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		9BEA996F2F58787F00A1D121 = {
 			isa = PBXGroup;
 			children = (
+				9BF36E302F58A03600050999 /* SolarSliceWidgetExtension.entitlements */,
 				9BF36D982F5891CD00050999 /* API */,
 				9BF36D9C2F5891CD00050999 /* Auth */,
 				9BF36D9E2F5891CD00050999 /* Models */,
@@ -74,6 +135,8 @@
 				9BF36DAA2F5891CD00050999 /* Summary */,
 				9BF36DAD2F5891CD00050999 /* Trends */,
 				9BEA997A2F58787F00A1D121 /* SolarSlice */,
+				9BF36E1B2F589FD900050999 /* SolarSliceWidget */,
+				9BF36E162F589FD800050999 /* Frameworks */,
 				9BEA99792F58787F00A1D121 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				9BEA99782F58787F00A1D121 /* SolarSlice.app */,
+				9BF36E152F589FD800050999 /* SolarSliceWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,6 +229,15 @@
 			path = SolarSlice/Trends;
 			sourceTree = "<group>";
 		};
+		9BF36E162F589FD800050999 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9BF36E172F589FD800050999 /* WidgetKit.framework */,
+				9BF36E192F589FD900050999 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -175,10 +248,12 @@
 				9BEA99742F58787F00A1D121 /* Sources */,
 				9BEA99752F58787F00A1D121 /* Frameworks */,
 				9BEA99762F58787F00A1D121 /* Resources */,
+				9BF36E2A2F589FDA00050999 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9BF36E282F589FDA00050999 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9BEA997A2F58787F00A1D121 /* SolarSlice */,
@@ -190,6 +265,28 @@
 			productReference = 9BEA99782F58787F00A1D121 /* SolarSlice.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9BF36E142F589FD800050999 /* SolarSliceWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BF36E2E2F589FDA00050999 /* Build configuration list for PBXNativeTarget "SolarSliceWidgetExtension" */;
+			buildPhases = (
+				9BF36E112F589FD800050999 /* Sources */,
+				9BF36E122F589FD800050999 /* Frameworks */,
+				9BF36E132F589FD800050999 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9BF36E1B2F589FD900050999 /* SolarSliceWidget */,
+			);
+			name = SolarSliceWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = SolarSliceWidgetExtension;
+			productReference = 9BF36E152F589FD800050999 /* SolarSliceWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -197,11 +294,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					9BEA99772F58787F00A1D121 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					9BF36E142F589FD800050999 = {
+						CreatedOnToolsVersion = 26.3;
 					};
 				};
 			};
@@ -220,12 +320,20 @@
 			projectRoot = "";
 			targets = (
 				9BEA99772F58787F00A1D121 /* SolarSlice */,
+				9BF36E142F589FD800050999 /* SolarSliceWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9BEA99762F58787F00A1D121 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BF36E132F589FD800050999 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -257,7 +365,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BF36E112F589FD800050999 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BF36E322F58A13C00050999 /* Models.swift in Sources */,
+				9BF36E312F58A12B00050999 /* AppGroupCache.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9BF36E282F589FDA00050999 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BF36E142F589FD800050999 /* SolarSliceWidgetExtension */;
+			targetProxy = 9BF36E272F589FDA00050999 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9BEA99812F58788000A1D121 /* Debug */ = {
@@ -386,6 +511,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SolarSlice/SolarSlice.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = R83642DDMF;
@@ -419,6 +545,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SolarSlice/SolarSlice.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = R83642DDMF;
@@ -447,6 +574,68 @@
 			};
 			name = Release;
 		};
+		9BF36E2B2F589FDA00050999 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SolarSliceWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R83642DDMF;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SolarSliceWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SolarSliceWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = au.com.jquirke.SolarSlice.SolarSliceWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9BF36E2C2F589FDA00050999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SolarSliceWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R83642DDMF;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SolarSliceWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SolarSliceWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = au.com.jquirke.SolarSlice.SolarSliceWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -464,6 +653,15 @@
 			buildConfigurations = (
 				9BEA99842F58788000A1D121 /* Debug */,
 				9BEA99852F58788000A1D121 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BF36E2E2F589FDA00050999 /* Build configuration list for PBXNativeTarget "SolarSliceWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BF36E2B2F589FDA00050999 /* Debug */,
+				9BF36E2C2F589FDA00050999 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

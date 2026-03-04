@@ -22,7 +22,6 @@ struct SolarProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SolarEntry>) -> Void) {
         let entry = SolarEntry(date: Date(), cache: AppGroupCache.loadWidgetData())
-        // Refresh every 15 minutes
         let nextRefresh = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
         let timeline = Timeline(entries: [entry], policy: .after(nextRefresh))
         completion(timeline)
@@ -33,30 +32,24 @@ struct SolarProvider: TimelineProvider {
 
 struct SolarWidgetView: View {
     let entry: SolarEntry
-
     @Environment(\.widgetFamily) var family
 
     var body: some View {
         if let data = entry.cache {
-            filledView(data: data)
+            if family == .systemMedium {
+                mediumView(data: data)
+            } else {
+                smallView(data: data)
+            }
         } else {
             placeholderView
         }
     }
 
-    private func filledView(data: WidgetCacheData) -> some View {
+    private func smallView(data: WidgetCacheData) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 4) {
-                Image(systemName: "sun.max.fill")
-                    .foregroundStyle(.yellow)
-                    .font(.caption)
-                Text("SolarSlice")
-                    .font(.caption2.bold())
-                    .foregroundStyle(.secondary)
-            }
-
+            header
             Spacer()
-
             VStack(alignment: .leading, spacing: 2) {
                 Text(formattedEnergy(data.solarUsedToday))
                     .font(.title2.bold())
@@ -65,7 +58,6 @@ struct SolarWidgetView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
-
             HStack {
                 Label(
                     String(format: "%.0f%%", data.solarPercentToday * 100),
@@ -73,9 +65,7 @@ struct SolarWidgetView: View {
                 )
                 .font(.caption2)
                 .foregroundStyle(.green)
-
                 Spacer()
-
                 Text(updatedText(data.updatedAt))
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
@@ -83,6 +73,71 @@ struct SolarWidgetView: View {
         }
         .padding()
         .containerBackground(.fill.tertiary, for: .widget)
+    }
+
+    private func mediumView(data: WidgetCacheData) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                header
+                Spacer()
+                Text(updatedText(data.updatedAt))
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            Divider()
+            HStack(spacing: 0) {
+                metricColumn(
+                    title: "Solar Today",
+                    value: formattedEnergy(data.solarUsedToday),
+                    icon: "sun.max.fill",
+                    color: .yellow
+                )
+                Divider()
+                metricColumn(
+                    title: "Solar %",
+                    value: String(format: "%.0f%%", data.solarPercentToday * 100),
+                    icon: "percent",
+                    color: .green
+                )
+                Divider()
+                metricColumn(
+                    title: "Last Hour",
+                    value: formattedEnergy(data.lastHourSolarConsumed),
+                    icon: "clock.fill",
+                    color: .orange
+                )
+            }
+        }
+        .padding()
+        .containerBackground(.fill.tertiary, for: .widget)
+    }
+
+    private func metricColumn(title: String, value: String, icon: String, color: Color) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+                .font(.callout)
+            Text(value)
+                .font(.callout.bold())
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var header: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "sun.max.fill")
+                .foregroundStyle(.yellow)
+                .font(.caption)
+            Text("SolarSlice")
+                .font(.caption2.bold())
+                .foregroundStyle(.secondary)
+        }
     }
 
     private var placeholderView: some View {
@@ -118,29 +173,5 @@ struct SolarWidgetView: View {
         if minutes < 60 { return "\(minutes)m ago" }
         let hours = Int(elapsed / 3600)
         return "\(hours)h ago"
-    }
-}
-
-// MARK: - Widget Configuration
-
-struct SolarSliceWidget: Widget {
-    let kind = "SolarSliceWidget"
-
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: SolarProvider()) { entry in
-            SolarWidgetView(entry: entry)
-        }
-        .configurationDisplayName("SolarSlice")
-        .description("Today's solar usage at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - Widget Bundle
-
-@main
-struct SolarSliceWidgetBundle: WidgetBundle {
-    var body: some Widget {
-        SolarSliceWidget()
     }
 }
