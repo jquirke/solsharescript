@@ -1,6 +1,6 @@
 # solshare
 
-Know your solar. A CLI, Alexa skill, and native iOS app for monitoring rooftop solar generation and consumption via the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) API.
+Know your solar. A CLI, Alexa skill, and native iOS app for monitoring rooftop solar generation and consumption via the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) API. ESPHome integration and smart device consumption tracking coming soon.
 
 ## Structure
 
