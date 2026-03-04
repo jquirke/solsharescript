@@ -79,8 +79,8 @@ python3 cli/solshare.py --from 2026-02-20 --to 2026-02-26
 
 | Argument | Description |
 |---|---|
-| `--from YYYY-MM-DD` | Start date in local time (default: 24 hours ago) |
-| `--to YYYY-MM-DD` | End date in local time, inclusive (default: same as `--from`) |
+| `--from YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | Start datetime in local time (default: 24 hours ago) |
+| `--to YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | End datetime in local time, inclusive (default: same as `--from`) |
 | `--email` | Email address (overrides `~/.solshare`) |
 | `--password` | Password (overrides `~/.solshare`) |
 | `--save` | Save `--email` and `--password` to `~/.solshare` |
@@ -96,7 +96,7 @@ Voice skill for Echo devices. Invocation name: **"my solar"**
 - "Alexa, ask my solar if there's surplus solar"
 - "Alexa, ask my solar how my solar did today"
 
-The skill is not published to the Alexa skill store. Each user must deploy their own private instance. See below for setup instructions.
+The skill is not published to the Alexa skill store and is currently available to beta testers only. Each user must deploy their own private instance. See below for setup instructions.
 
 ### Alexa Skill Setup
 
@@ -191,14 +191,16 @@ Your skill will be available on any Echo registered to your Amazon developer acc
 
 A native SwiftUI app for iPhone displaying your solar data at a glance.
 
+The app is currently available to beta testers via TestFlight. Public App Store release pending approval.
+
 **Features:**
 - Summary tab: last hour and today metrics (solar used, solar %, total demand, grid import, delivered, exported)
 - Trends tab: day / week / month stacked bar charts comparing solar consumed, exported, and grid import
 - Keychain-backed login with automatic token refresh
 - Pull-to-refresh and 5-minute in-memory cache
-- Home screen widget scaffold
+- Home screen widget (small and medium) showing solar today, solar %, and last hour solar
 
-**Requirements:** iOS 16+, Xcode 15+, paid Apple Developer account (for device install)
+**Requirements:** iOS 16+, Xcode 15+, paid Apple Developer account (to build from source)
 
 See [ios/SETUP.md](ios/SETUP.md) for Xcode project setup instructions.
 
