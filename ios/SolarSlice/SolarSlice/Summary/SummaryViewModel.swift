@@ -1,0 +1,137 @@
+import Foundation
+import Combine
+
+@MainActor
+final class SummaryViewModel: ObservableObject {
+    // MARK: - Today aggregates
+    @Published private(set) var todayDemand: Double = 0
+    @Published private(set) var todaySolarConsumed: Double = 0
+    @Published private(set) var todaySolarDelivered: Double = 0
+    @Published private(set) var todaySolarExported: Double = 0
+    @Published private(set) var todayGridImport: Double = 0
+    @Published private(set) var todaySolarPercent: Double = 0
+
+    // MARK: - Last hour
+    @Published private(set) var lastHourSolarConsumed: Double = 0
+    @Published private(set) var lastHourDemand: Double = 0
+    @Published private(set) var lastHourGridImport: Double = 0
+    @Published private(set) var lastHourSolarPercent: Double = 0
+
+    // MARK: - State
+    @Published private(set) var isLoadingToday = false
+    @Published private(set) var isLoadingLastHour = false
+    @Published private(set) var errorMessage: String?
+
+    private var todayFetchedAt: Date?
+    private var lastHourFetchedAt: Date?
+    private let cacheTTL: TimeInterval = 300 // 5 minutes
+
+    // MARK: - Fetch
+
+    func refresh(property: SolProperty, token: String, forceRefresh: Bool = false) async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchToday(property: property, token: token, force: forceRefresh) }
+            group.addTask { await self.fetchLastHour(property: property, token: token, force: forceRefresh) }
+        }
+    }
+
+    func fetchToday(property: SolProperty, token: String, force: Bool = false) async {
+        if !force, let fetchedAt = todayFetchedAt,
+           Date().timeIntervalSince(fetchedAt) < cacheTTL { return }
+
+        isLoadingToday = true
+        defer { isLoadingToday = false }
+
+        let (from, to) = todayRange()
+        do {
+            let snapshots = try await APIClient.shared.fetchSnapshots(
+                propertyId: property.id, from: from, to: to, token: token
+            )
+            applyTodayAggregates(snapshots)
+            todayFetchedAt = Date()
+            writeWidgetCache()
+        } catch let error as APIError where error == .invalidToken {
+            AuthManager.shared.handleTokenExpiry()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func fetchLastHour(property: SolProperty, token: String, force: Bool = false) async {
+        if !force, let fetchedAt = lastHourFetchedAt,
+           Date().timeIntervalSince(fetchedAt) < cacheTTL { return }
+
+        isLoadingLastHour = true
+        defer { isLoadingLastHour = false }
+
+        let (from, to) = lastHourRange()
+        do {
+            let snapshots = try await APIClient.shared.fetchSnapshots(
+                propertyId: property.id, from: from, to: to, token: token
+            )
+            applyLastHourAggregates(snapshots)
+            lastHourFetchedAt = Date()
+            writeWidgetCache()
+        } catch let error as APIError where error == .invalidToken {
+            AuthManager.shared.handleTokenExpiry()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - Private helpers
+
+    private func applyTodayAggregates(_ snapshots: [Snapshot]) {
+        let demand = snapshots.map(\.energyDemand).reduce(0, +)
+        let solar = snapshots.map { max($0.solarConsumed, 0) }.reduce(0, +)
+        let delivered = snapshots.map { max($0.solarDelivered, 0) }.reduce(0, +)
+        let exported = snapshots.map { max($0.solarExported, 0) }.reduce(0, +)
+
+        todayDemand = demand
+        todaySolarConsumed = solar
+        todaySolarDelivered = delivered
+        todaySolarExported = exported
+        todayGridImport = max(demand - solar, 0)
+        todaySolarPercent = demand > 0 ? solar / demand : 0
+    }
+
+    private func applyLastHourAggregates(_ snapshots: [Snapshot]) {
+        let demand = snapshots.map(\.energyDemand).reduce(0, +)
+        let solar = snapshots.map { max($0.solarConsumed, 0) }.reduce(0, +)
+
+        lastHourDemand = demand
+        lastHourSolarConsumed = solar
+        lastHourGridImport = max(demand - solar, 0)
+        lastHourSolarPercent = demand > 0 ? solar / demand : 0
+    }
+
+    private func writeWidgetCache() {
+        let data = WidgetCacheData(
+            solarUsedToday: todaySolarConsumed,
+            solarPercentToday: todaySolarPercent,
+            lastHourSolarConsumed: lastHourSolarConsumed,
+            updatedAt: Date()
+        )
+        AppGroupCache.saveWidgetData(data)
+    }
+
+    // MARK: - Time ranges (unix seconds)
+
+    private func todayRange() -> (Int, Int) {
+        let cal = Calendar.current
+        let startOfDay = cal.startOfDay(for: Date())
+        let from = Int(startOfDay.timeIntervalSince1970)
+        let to = from + 86400
+        return (from, to)
+    }
+
+    private func lastHourRange() -> (Int, Int) {
+        let now = Date()
+        let cal = Calendar.current
+        let components = cal.dateComponents([.year, .month, .day, .hour], from: now)
+        let startOfHour = cal.date(from: components) ?? now
+        let to = Int(startOfHour.timeIntervalSince1970)
+        let from = to - 3600
+        return (from, to)
+    }
+}

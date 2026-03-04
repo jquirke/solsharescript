@@ -11,6 +11,9 @@ solshare/
 ├── alexa-skill/    # Alexa voice skill
 │   ├── lambda/
 │   └── skill-package/
+├── ios/            # iOS app (SolarSlice)
+│   ├── SETUP.md
+│   └── SolarSlice/
 └── API.md          # Allume Energy API reference
 ```
 
@@ -181,6 +184,23 @@ cd alexa-skill && ask deploy
 ```
 
 Your skill will be available on any Echo registered to your Amazon developer account.
+
+---
+
+## iOS App (SolarSlice)
+
+A native SwiftUI app for iPhone displaying your solar data at a glance.
+
+**Features:**
+- Summary tab: last hour and today metrics (solar used, solar %, total demand, grid import, delivered, exported)
+- Trends tab: day / week / month stacked bar charts comparing solar consumed, exported, and grid import
+- Keychain-backed login with automatic token refresh
+- Pull-to-refresh and 5-minute in-memory cache
+- Home screen widget scaffold
+
+**Requirements:** iOS 16+, Xcode 15+, paid Apple Developer account (for device install)
+
+See [ios/SETUP.md](ios/SETUP.md) for Xcode project setup instructions.
 
 ---
 

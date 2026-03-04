@@ -1,0 +1,24 @@
+# Xcode build artifacts
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+
+# Xcode user-specific
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+
+# Previews
+PreviewReplacement*/
+
+# Archives
+*.xcarchive
+
+# Pods (not used here but just in case)
+Pods/
+
+# macOS
+.DS_Store
