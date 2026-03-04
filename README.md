@@ -1,6 +1,6 @@
 # solshare
 
-Tools for fetching and interacting with your solar and electricity demand data from the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) portal.
+Know your solar. A CLI, Alexa skill, and native iOS app for monitoring rooftop solar generation and consumption via the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) API.
 
 ## Structure
 
