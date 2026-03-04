@@ -191,7 +191,7 @@ def handle_today_summary():
         return speak("No energy data recorded today yet.")
 
     text = (f"Today so far, solar has met {p:.0f} percent of your demand. "
-            f"You've used {kwh(total_solar)} of solar out of {kwh(total_delivered)} delivered, "
+            f"You've used {kwh(total_solar)} of solar, "
             f"with {kwh(total_exported)} exported to the grid, "
             f"and {kwh(total_grid)} drawn from the grid.")
 
