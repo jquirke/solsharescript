@@ -127,10 +127,10 @@ def handle_current_solar():
     if delivered == 0:
         text = "There is no solar generation at the moment."
     elif p >= 99:
-        surplus = round(delivered - solar, 2)
-        if surplus > 0:
+        exported = max(r["solarExported"], 0)
+        if exported > 0:
             text = (f"Solar is covering all of your current demand of {kwh(demand)}, "
-                    f"with {kwh(surplus)} surplus being exported to the grid.")
+                    f"with {kwh(exported)} surplus being exported to the grid.")
         else:
             text = f"Solar is covering all of your current demand of {kwh(demand)}."
     else:
@@ -181,11 +181,10 @@ def handle_today_summary():
     if not data:
         return speak("No data is available for today yet.")
 
-    total_demand    = sum(r["energyDemand"] for r in data)
-    total_solar     = sum(max(r["solarConsumed"], 0) for r in data)
-    total_delivered = sum(max(r["solarDelivered"], 0) for r in data)
-    total_exported  = round(total_delivered - total_solar, 2)
-    total_grid      = max(total_demand - total_solar, 0)
+    total_demand   = sum(r["energyDemand"] for r in data)
+    total_solar    = sum(max(r["solarConsumed"], 0) for r in data)
+    total_exported = sum(max(r["solarExported"], 0) for r in data)
+    total_grid     = max(total_demand - total_solar, 0)
     p               = pct(total_solar, total_demand)
 
     if total_demand == 0:

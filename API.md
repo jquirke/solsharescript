@@ -126,6 +126,11 @@ GET /properties/<propertyId>/snapshots?type=hourly&from=1771977600&to=1772064000
 - `gridImport = energyDemand - solarConsumed`
 - `solarSelfConsumptionRate = solarConsumed / solarDelivered`
 
+**Field notes:**
+- Despite the endpoint being named `type=hourly`, the actual bucket size depends on the query window — narrow windows return finer-grained buckets (see [Observed Behaviour](#observed-behaviour) below).
+- `solarDelivered` ≠ `solarConsumed` + `solarExported` in all cases — small discrepancies observed, possibly due to rounding or metering losses. Do not assume they are identical.
+- `solarConsumed` can be negative in raw API responses; clamp to 0 before use.
+
 ### Hourly Snapshots by Project
 
 ```
@@ -161,6 +166,63 @@ These were found in the JS bundle but are not the focus of this project.
 | `GET` | `/snapshot/{id}/csv` | Download snapshot as CSV |
 | `GET` | `/payment/subscription` | Get subscription details |
 | `GET` | `/service-interface/system-info/{id}` | Get SolShare system info |
+
+---
+
+## Observed Behaviour
+
+Findings from empirical testing (2026-03-04/05).
+
+### Bucket granularity scales with query window
+
+Despite `type=hourly`, the API returns sub-hourly buckets when the query window is narrow:
+
+| Query window | Observed bucket size |
+|---|---|
+| 5 minutes | 5 minutes |
+| 1 hour | 5 minutes |
+| 6 hours | 1 hour |
+
+The exact threshold where it coarsens is unknown — somewhere between 1 hour and 6 hours. Querying hour-by-hour is a reliable way to get 5-minute resolution across a longer period.
+
+**Uncertainty:** It is not known whether this behaviour is intentional, documented, or stable across API versions.
+
+### Data latency
+
+Data appears in the API within ~1 minute of the interval closing. A 5-minute bucket ending at 01:05 was visible by 01:06. This makes the API suitable for near-real-time monitoring applications.
+
+**Uncertainty:** Only tested at night (no solar generation). Latency during peak generation hours is unknown and may differ.
+
+### Solar generation volatility (2026-03-04, partly cloudy)
+
+Analysed 72 × 5-minute `solarDelivered` readings from 12:00–18:00 AEDT:
+
+- **Min/Max:** 0.00 / 0.17 kWh per 5-min interval
+- **Coefficient of variation:** 114% — highly volatile signal
+- **Largest single-step drop:** 87% in one 5-minute interval (cloud event at 13:10)
+- **Zero-delivery periods:** 18% of intervals; two sustained outages of 30 min and 20 min between 14:15–15:10
+- **Most stable hour:** 16:00–16:55 (CV ~35%), low but consistent
+
+Implication: the raw 5-minute signal is too noisy for direct HVAC actuation. A 15-minute rolling average with hysteresis is recommended for demand-shedding applications. Future work: correlate with BOM weather/cloud cover data and clear-sky irradiance model to separate cloud events from sun-angle decline.
+
+### Load detection experiment (2026-03-05)
+
+Ran a dryer (no load) from 01:00–01:08 AEDT to test whether individual appliance loads are detectable.
+
+Results:
+
+| Bucket | Demand |
+|---|---|
+| 00:55 (baseline) | 0.07 kWh |
+| 01:00 (dryer on) | 0.06 kWh |
+| 01:05 (dryer on) | 0.08 kWh |
+| 01:10 (after) | 0.06 kWh |
+
+The dryer produced only ~0.02 kWh above baseline per 5-minute bucket — approximately 240W apparent load. This was lower than expected and is likely explained by:
+1. No clothes in the drum (minimal thermal load)
+2. The 8-minute run straddling the 01:05 bucket boundary, diluting the load across two buckets
+
+**Planned follow-up:** repeat with a full load of clothes, starting at a non-boundary time (e.g. :17 or :23) to land the bulk of the load inside a single 5-minute bucket.
 
 ---
 
