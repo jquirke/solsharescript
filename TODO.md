@@ -8,11 +8,6 @@ Currently the widget only updates when the main app is opened. To enable true ba
 - In the task handler: fetch today's data → write App Group cache → call `WidgetCenter.shared.reloadAllTimelines()`
 - Also call `WidgetCenter.shared.reloadAllTimelines()` in `SummaryViewModel.writeWidgetCache()` so the widget updates immediately on foreground fetch
 
-### Dryer experiment
-Repeat load detection experiment with:
-- Full drum load (not empty) ✓ done 2026-03-05
-- Start time not straddling a 5-minute bucket boundary ✓ done 2026-03-05
-- Baseline: compare against `solarConsumed` delta rather than raw demand
 
 ## Home Assistant Integration
 
