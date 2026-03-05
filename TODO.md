@@ -8,8 +8,10 @@ Currently the widget only updates when the main app is opened. To enable true ba
 - In the task handler: fetch today's data → write App Group cache → call `WidgetCenter.shared.reloadAllTimelines()`
 - Also call `WidgetCenter.shared.reloadAllTimelines()` in `SummaryViewModel.writeWidgetCache()` so the widget updates immediately on foreground fetch
 
+## Home Assistant
 
-## Home Assistant Integration
+### HA Energy dashboard support
+Today's cumulative sensors (`today_solar_consumed`, `today_grid_import`, `today_solar_exported`) are currently `SensorStateClass.MEASUREMENT`. To feed the HA Energy dashboard they need `SensorStateClass.TOTAL` with a `last_reset` attribute set to start of local day. This would allow proper daily/weekly/monthly energy tracking in the Energy dashboard.
 
 ### Solar-driven AC automation
 Use existing IR blaster AC control + SolShare solar sensors to:
@@ -21,7 +23,7 @@ Use existing IR blaster AC control + SolShare solar sensors to:
 Add `strings.json` so HA displays human-readable errors ("Invalid credentials", "Cannot connect") instead of raw keys in the setup UI.
 
 ### HACS custom integration (longer term)
-Package as a proper Home Assistant custom integration for others in the building to install via HACS. Handles token refresh automatically, exposes sensors via the HA entity registry.
+Package as a proper Home Assistant custom integration for others in the building to install via HACS.
 
 ## General
 
