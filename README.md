@@ -1,91 +1,66 @@
 # solshare
 
-Know your solar. A CLI, Alexa skill, native iOS app, and Home Assistant integration for monitoring rooftop solar generation and consumption via the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) API.
+Know your solar. Monitor rooftop solar generation and consumption via the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) API.
+
+- [Home Assistant Integration](#home-assistant-integration) — sensors for automations and dashboards
+- [iOS App (SolarSlice)](#ios-app-solarslice) — native iPhone app with widget
+- [Alexa Skill](#alexa-skill) — voice queries via Echo devices
+- [CLI](#cli) — command-line hourly table
 
 ## Structure
 
 ```
 solshare/
-├── cli/              # Command-line tool
-│   └── solshare.py
-├── alexa-skill/      # Alexa voice skill
-│   ├── lambda/
-│   └── skill-package/
+├── homeassistant/    # Home Assistant custom integration
+│   └── custom_components/solshare/
 ├── ios/              # iOS app (SolarSlice)
 │   ├── SETUP.md
 │   └── SolarSlice/
-├── homeassistant/    # Home Assistant custom integration
-│   └── custom_components/solshare/
+├── alexa-skill/      # Alexa voice skill
+│   ├── lambda/
+│   └── skill-package/
+├── cli/              # Command-line tool
+│   └── solshare.py
 └── API.md            # Allume Energy API reference
 ```
 
-## CLI
+## Home Assistant Integration
 
-Displays an hourly table of your energy demand vs solar consumption for any time window, with a bar chart showing solar coverage per hour.
+A custom integration exposing SolShare data as HA sensors, updated every 5 minutes.
 
-```
-┌─────────────────────┬────────┬────────┬────────┬──────────────────────────┐
-│ Time (AEDT)         │ Demand │  Solar │   Grid │ Solar coverage           │
-├─────────────────────┼────────┼────────┼────────┼──────────────────────────┤
-│ Thu 26 Feb 07:00    │  0.16  │  0.06  │  0.10  │ █░░░░░░░░░░░░░░░░░░░  38% │
-│ Thu 26 Feb 08:00    │  0.13  │  0.00  │  0.13  │ ░░░░░░░░░░░░░░░░░░░░   0% │
-│ Thu 26 Feb 11:00    │  1.52  │  1.52  │  0.00  │ ████████████████░░░░ 100% │
-│ Thu 26 Feb 19:00    │  1.94  │  0.14  │  1.80  │ █░░░░░░░░░░░░░░░░░░░   7% │
-│           ...       │        │        │        │                          │
-├─────────────────────┼────────┼────────┼────────┼──────────────────────────┤
-│ TOTAL               │ 14.48  │  3.27  │ 11.21  │ Overall solar:  23%    │
-└─────────────────────┴────────┴────────┴────────┴──────────────────────────┘
-```
+**Sensors exposed:**
+- Current (last 5-min bucket): solar consumed, grid import, solar exported, solar %
+- Last hour: solar consumed, grid import, solar exported, solar %
+- Today: solar consumed, grid import, solar exported, solar %, total demand
 
-All values are in **kWh**. Times are displayed in the **local system timezone**.
-
-### Requirements
-
-Python 3.6+, no third-party libraries required.
-
-### Setup
-
-**1. Clone the repo**
+**Installation:**
 
 ```bash
-git clone https://github.com/jquirke/solshare.git
-cd solshare
+cp -r homeassistant/custom_components/solshare /your/ha/config/custom_components/
 ```
 
-**2. Save your credentials**
+Restart Home Assistant, then add via **Settings → Integrations → Add Integration → SolShare**. Enter your SolCentre email and password.
 
-```bash
-python3 cli/solshare.py --email your@email.com --password yourpassword --save
-```
+Once configured, sensors appear immediately and can be added to a dashboard via **Edit Dashboard → Add Card → Entities**. Historical data is not back-populated — graphs will build from the time of installation.
 
-This writes `~/.solshare` (mode 600):
+---
 
-```ini
-[credentials]
-email = your@email.com
-password = yourpassword
-```
+## iOS App (SolarSlice)
 
-### Usage
+A native SwiftUI app for iPhone displaying your solar data at a glance.
 
-```bash
-# Last 24 hours (default)
-python3 cli/solshare.py
+Available on the [App Store](https://apps.apple.com/us/app/solarslice/id6760034923).
 
-# A specific day
-python3 cli/solshare.py --from 2026-02-25
+**Features:**
+- Summary tab: last hour and today metrics (solar used, solar %, total demand, grid import, delivered, exported)
+- Trends tab: day / week / month stacked bar charts comparing solar consumed, exported, and grid import
+- Keychain-backed login with automatic token refresh
+- Pull-to-refresh and 5-minute in-memory cache
+- Home screen widget (small and medium) showing solar today, solar %, and last hour solar
 
-# A date range
-python3 cli/solshare.py --from 2026-02-20 --to 2026-02-26
-```
+**Requirements:** iOS 16+, Xcode 15+, paid Apple Developer account (to build from source)
 
-| Argument | Description |
-|---|---|
-| `--from YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | Start datetime in local time (default: 24 hours ago) |
-| `--to YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | End datetime in local time, inclusive (default: same as `--from`) |
-| `--email` | Email address (overrides `~/.solshare`) |
-| `--password` | Password (overrides `~/.solshare`) |
-| `--save` | Save `--email` and `--password` to `~/.solshare` |
+See [ios/SETUP.md](ios/SETUP.md) for Xcode project setup instructions.
 
 ---
 
@@ -189,42 +164,73 @@ Your skill will be available on any Echo registered to your Amazon developer acc
 
 ---
 
-## iOS App (SolarSlice)
+## CLI
 
-A native SwiftUI app for iPhone displaying your solar data at a glance.
+Displays an hourly table of your energy demand vs solar consumption for any time window, with a bar chart showing solar coverage per hour.
 
-Available on the [App Store](https://apps.apple.com/us/app/solarslice/id6760034923).
-
-**Features:**
-- Summary tab: last hour and today metrics (solar used, solar %, total demand, grid import, delivered, exported)
-- Trends tab: day / week / month stacked bar charts comparing solar consumed, exported, and grid import
-- Keychain-backed login with automatic token refresh
-- Pull-to-refresh and 5-minute in-memory cache
-- Home screen widget (small and medium) showing solar today, solar %, and last hour solar
-
-**Requirements:** iOS 16+, Xcode 15+, paid Apple Developer account (to build from source)
-
-See [ios/SETUP.md](ios/SETUP.md) for Xcode project setup instructions.
-
----
-
-## Home Assistant Integration
-
-A custom integration exposing SolShare data as HA sensors, updated every 5 minutes.
-
-**Sensors exposed:**
-- Last hour: solar consumed, grid import, solar exported, solar %
-- Today: solar consumed, grid import, solar exported, solar %, total demand
-
-**Installation:**
-
-```bash
-cp -r homeassistant/custom_components/solshare /your/ha/config/custom_components/
+```
+┌─────────────────────┬────────┬────────┬────────┬──────────────────────────┐
+│ Time (AEDT)         │ Demand │  Solar │   Grid │ Solar coverage           │
+├─────────────────────┼────────┼────────┼────────┼──────────────────────────┤
+│ Thu 26 Feb 07:00    │  0.16  │  0.06  │  0.10  │ █░░░░░░░░░░░░░░░░░░░  38% │
+│ Thu 26 Feb 08:00    │  0.13  │  0.00  │  0.13  │ ░░░░░░░░░░░░░░░░░░░░   0% │
+│ Thu 26 Feb 11:00    │  1.52  │  1.52  │  0.00  │ ████████████████░░░░ 100% │
+│ Thu 26 Feb 19:00    │  1.94  │  0.14  │  1.80  │ █░░░░░░░░░░░░░░░░░░░   7% │
+│           ...       │        │        │        │                          │
+├─────────────────────┼────────┼────────┼────────┼──────────────────────────┤
+│ TOTAL               │ 14.48  │  3.27  │ 11.21  │ Overall solar:  23%    │
+└─────────────────────┴────────┴────────┴────────┴──────────────────────────┘
 ```
 
-Restart Home Assistant, then add via **Settings → Integrations → Add Integration → SolShare**. Enter your SolCentre email and password.
+All values are in **kWh**. Times are displayed in the **local system timezone**.
 
-Once configured, sensors appear immediately and can be added to a dashboard via **Edit Dashboard → Add Card → Entities**. Historical data is not back-populated — graphs will build from the time of installation.
+### Requirements
+
+Python 3.6+, no third-party libraries required.
+
+### Setup
+
+**1. Clone the repo**
+
+```bash
+git clone https://github.com/jquirke/solshare.git
+cd solshare
+```
+
+**2. Save your credentials**
+
+```bash
+python3 cli/solshare.py --email your@email.com --password yourpassword --save
+```
+
+This writes `~/.solshare` (mode 600):
+
+```ini
+[credentials]
+email = your@email.com
+password = yourpassword
+```
+
+### Usage
+
+```bash
+# Last 24 hours (default)
+python3 cli/solshare.py
+
+# A specific day
+python3 cli/solshare.py --from 2026-02-25
+
+# A date range
+python3 cli/solshare.py --from 2026-02-20 --to 2026-02-26
+```
+
+| Argument | Description |
+|---|---|
+| `--from YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | Start datetime in local time (default: 24 hours ago) |
+| `--to YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | End datetime in local time, inclusive (default: same as `--from`) |
+| `--email` | Email address (overrides `~/.solshare`) |
+| `--password` | Password (overrides `~/.solshare`) |
+| `--save` | Save `--email` and `--password` to `~/.solshare` |
 
 ---
 
