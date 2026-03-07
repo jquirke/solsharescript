@@ -193,7 +193,7 @@ Your skill will be available on any Echo registered to your Amazon developer acc
 
 A native SwiftUI app for iPhone displaying your solar data at a glance.
 
-The app is currently available to beta testers via TestFlight. Public App Store release pending approval.
+Available on the [App Store](https://apps.apple.com/us/app/solarslice/id6760034923).
 
 **Features:**
 - Summary tab: last hour and today metrics (solar used, solar %, total demand, grid import, delivered, exported)
