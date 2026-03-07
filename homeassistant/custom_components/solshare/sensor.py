@@ -1,8 +1,9 @@
-from homeassistant.components.sensor import SensorEntity, SensorStateClass
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+import homeassistant.util.dt as dt_util
 
 from .const import DOMAIN
 from .coordinator import SolShareCoordinator
@@ -45,8 +46,18 @@ class SolShareSensor(CoordinatorEntity, SensorEntity):
         self._attr_name = f"SolShare {name}"
         self._attr_unique_id = f"solshare_{period}_{key}"
         self._attr_native_unit_of_measurement = unit
-        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_icon = icon
+        if period == "today" and unit == "kWh":
+            self._attr_device_class = SensorDeviceClass.ENERGY
+            self._attr_state_class = SensorStateClass.TOTAL
+        else:
+            self._attr_state_class = SensorStateClass.MEASUREMENT
+
+    @property
+    def last_reset(self):
+        if self._period == "today" and self._attr_native_unit_of_measurement == "kWh":
+            return dt_util.start_of_local_day()
+        return None
 
     @property
     def native_value(self):
