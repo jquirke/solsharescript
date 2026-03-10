@@ -1,5 +1,7 @@
 # solshare
 
+> **Disclaimer:** This is an independent, personal project and is not affiliated with, endorsed by, or supported by [Allume Energy](https://allumeenergy.com.au) or SolShare. All trademarks belong to their respective owners.
+
 Know your solar. Monitor rooftop solar generation and consumption via the [Allume Energy SolCentre](https://solcentre.allumeenergy.com) API.
 
 - [Home Assistant Integration](https://github.com/jquirke/ha-solshare) — sensors for automations and dashboards
@@ -225,8 +227,3 @@ A project to maximise rooftop PV energy received via [Allume Energy's SolShare](
 
 See [API.md](API.md) for full documentation of the underlying Allume Energy API.
 
----
-
-## Disclaimer
-
-This is an independent, personal project and is not affiliated with, endorsed by, or supported by [Allume Energy](https://allumeenergy.com.au) or SolShare. All trademarks belong to their respective owners.
